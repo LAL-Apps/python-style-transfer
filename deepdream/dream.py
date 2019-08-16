@@ -7,16 +7,12 @@ import torch.optim as optim
 from torchvision import transforms, models
 from PIL import Image
 
-def loadImage(path,image,maxSize=400):
+def prepImage(image,maxSize=400):
     '''
     Helper function to prepare an image by scaling and transforming
-    :param path: File path to load the image from
     :param image: PIL image object to scale
     :param maxSize: Max size of the picture. Reduce for faster training
     '''
-    #Load image and convert to RGB. Standard is RBG
-    image = Image.open(path).convert('RGB')
-
     #Determine if image should be resized
     size = maxSize if max(image.size) > maxSize else max(image.size)
 
@@ -43,7 +39,9 @@ class Dream():
 
         :param path: Path to the image file
         '''
-        self.contentImage = loadImage(path)
+        #Load image and convert to RGB. Standard is RBG
+        image = Image.open(path).convert('RGB')
+        self.contentImage = prepImage(image)
 
     def setContentFromUrl(self, url):
         '''
@@ -59,7 +57,9 @@ class Dream():
 
         :param path: Path to the image file
         '''
-        self.styleImage = loadImage(path)
+        #Load image and convert to RGB. Standard is RBG
+        image = Image.open(path).convert('RGB')
+        self.styleImage = prepImage(image)
 
     def setStyleFromUrl(self, url):
         '''
