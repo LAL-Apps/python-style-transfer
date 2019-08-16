@@ -1,6 +1,36 @@
 '''
 Module to apply a deep dream to style and content image
 '''
+import logging
+import torch
+import torch.optim as optim
+from torchvision import transforms, models
+from PIL import Image
+
+def loadImage(path,image,maxSize=400):
+    '''
+    Helper function to prepare an image by scaling and transforming
+    :param path: File path to load the image from
+    :param image: PIL image object to scale
+    :param maxSize: Max size of the picture. Reduce for faster training
+    '''
+    #Load image and convert to RGB. Standard is RBG
+    image = Image.open(path).convert('RGB')
+
+    #Determine if image should be resized
+    size = maxSize if max(image.size) > maxSize else max(image.size)
+
+    #Apply the transformation to scale and normalize the image
+    transform = transforms.Compose([
+                        transforms.Resize(size),
+                        transforms.ToTensor(),
+                        transforms.Normalize((0.485, 0.456, 0.406),
+                                             (0.229, 0.224, 0.225))])
+    image = transform(image)
+    #Remove the alpha dimension
+    image = image[:3,:,:] #TODO unsqueeze to support batch dimension
+    return image
+
 
 class Dream():
     '''
@@ -13,7 +43,7 @@ class Dream():
 
         :param path: Path to the image file
         '''
-        pass #TODO Implement me
+        self.contentImage = loadImage(path)
 
     def setContentFromUrl(self, url):
         '''
@@ -29,7 +59,7 @@ class Dream():
 
         :param path: Path to the image file
         '''
-        pass #TODO Implement me
+        self.styleImage = loadImage(path)
 
     def setStyleFromUrl(self, url):
         '''
