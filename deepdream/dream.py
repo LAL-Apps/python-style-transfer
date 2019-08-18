@@ -98,3 +98,13 @@ class Dream():
         model.setImages(self.contentImage, self.styleImage)
         self.styledImage = model.train(self.styleWeights,self.contentWeight,self.styleWeights, epochs)
         return self.styledImage
+
+    def writeFinalImage(self,path):
+        '''
+        Write the final image to the file system
+
+        Args:
+            path: Full path containing the file name to use as output. File ending should be jpg
+        '''
+        #Using standard PIL functionality
+        self.styledImage.save(path)

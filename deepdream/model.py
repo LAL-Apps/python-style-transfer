@@ -117,7 +117,7 @@ class Model():
             contTrain: Set to true to continue training with previous image, otherwise takes new copy
         '''
         #Create a target image from the content image
-        if contTrain = False:#If contTrain is set just coninue training with the previous one
+        if contTrain == False:#If contTrain is set just coninue training with the previous one
             #Target image will then be changed during training
             self.target = self.content.clone().requires_grad_(True).to(self.device)
 

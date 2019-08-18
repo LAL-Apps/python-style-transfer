@@ -19,6 +19,11 @@ def test_train_with_images_from_file():
 
     #Run the training loop. Only 1 epoch for the test
     img = dream.apply(1)
+    assert img is not None
+
+    dream.writeFinalImage('temp.jpg')
+    #TODO test if file exsits and delete
+
 
 
 def test_train_with_images_from_url():
