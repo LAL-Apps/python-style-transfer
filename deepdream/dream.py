@@ -17,6 +17,7 @@ def prepImage(image,maxSize=400):
     Helper function to prepare an image by scaling and transforming
     :param image: PIL image object to scale
     :param maxSize: Max size of the picture. Reduce for faster training
+    :return: Normalized image as tensor
     '''
     #Determine if image should be resized
     size = maxSize if max(image.size) > maxSize else max(image.size)
@@ -33,6 +34,11 @@ def prepImage(image,maxSize=400):
     return image
 
 def loadImageFromUrl(url):
+    '''
+    Load an image from a URL into a PIL image
+    :param url: URL to the picture
+    :return: PIL image
+    '''
     try:
         r = requests.get(url, headers={'User-Agent': 'Mozilla/5.0 (iPad; CPU OS 7_0_6 like Mac OS X) AppleWebKit/537.51.1 (KHTML, like Gecko) Mobile/11B651'})
         picture  = r.content
