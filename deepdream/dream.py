@@ -2,10 +2,15 @@
 Module to apply a deep dream to style and content image
 '''
 import logging
+import requests
+import io
 import torch
+import numpy as np
 import torch.optim as optim
 from torchvision import transforms, models
 from PIL import Image
+
+from deepdream.exceptions import ImageLoadException
 
 def prepImage(image,maxSize=400):
     '''
@@ -24,8 +29,24 @@ def prepImage(image,maxSize=400):
                                              (0.229, 0.224, 0.225))])
     image = transform(image)
     #Remove the alpha dimension
-    image = image[:3,:,:] #TODO unsqueeze to support batch dimension
+    image = image[:3,:,:] #TODO unsqueeze to support batch dimension?
     return image
+
+def loadImageFromUrl(url):
+    try:
+        r = requests.get(url, headers={'User-Agent': 'Mozilla/5.0 (iPad; CPU OS 7_0_6 like Mac OS X) AppleWebKit/537.51.1 (KHTML, like Gecko) Mobile/11B651'})
+        picture  = r.content
+    except requests.adapters.SSLError as e:
+        raise ImageLoadException('SSL Error on URL {}'.format(url))
+    except requests.exceptions.RequestException as e:
+        raise ImageLoadException('Requests error {} on URL {}'.format(e,url))
+    except (ConnectionResetError, http.client.HTTPException) as e:
+        raise ImageLoadException('ConnectionResetError or BadStatusLine Error on URL {}'.format(url))
+    #Process the image
+    bytesPicture = io.BytesIO(picture)
+    if len(bytesPicture.getvalue()) == 0:
+        raise ImageLoadException('Received empty image from URL {}'.format(url))
+    return Image.open(bytesPicture)
 
 
 class Dream():
@@ -49,7 +70,8 @@ class Dream():
 
         :param url: URL to the image
         '''
-        pass #TODO Implement me
+        image = loadImageFromUrl(url)
+        self.contentImage = prepImage(image)
 
     def setStyleFromPath(self, path):
         '''
@@ -67,7 +89,8 @@ class Dream():
 
         :param url: URL to the image
         '''
-        pass #TODO Implement me
+        image = loadImageFromUrl(url)
+        self.styleImage = prepImage(image)
 
     def setParams(self):
         '''
