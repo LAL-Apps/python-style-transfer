@@ -7,6 +7,7 @@ import io
 from PIL import Image
 
 from deepdream.exceptions import ImageLoadException
+from deepdream.model import Model
 
 def loadImageFromUrl(url):
     '''
@@ -69,12 +70,23 @@ class Dream():
         '''
         self.styleImage = loadImageFromUrl(url)
 
-    def setParams(self):
+    def setParams(self,weightL1, weightL2, weightL3, weightL4, weightL5,contentWeight, styleWeight):
         '''
-        Set the weights for the model
-        #TODO add parameters
+        Set the weights for training the model
+
+        Args:
+            weightL1: Weight with which to consider 1st style layer
+            weightL2: Weight with which to consider 2nd style layer
+            weightL3: Weight with which to consider 3rd style layer
+            weightL4: Weight with which to consider 4th style layer
+            weightL5: Weight with which to consider 5th style layer
+            contentWeight: Weight for considering the content
+            styleWeight: Weight for considering the style image
         '''
-        pass #TODO implement me
+        self.styleWeights = {'conv1_1': weightL1, 'conv2_1': weightL2,'conv3_1': weightL3,
+                 'conv4_1': weightL4,'conv5_1': weightL5}
+        self.contentWeight = contentWeight
+        self.styleWeight = styleWeight
 
     def apply(self, epochs):
         '''
@@ -82,4 +94,7 @@ class Dream():
 
         :param epochs: Number of iterations to train the model
         '''
-        pass #TODO implement me
+        model = Model()
+        model.setImages(self.contentImage, self.styleImage)
+        self.styledImage = model.train(self.styleWeights,self.contentWeight,self.styleWeights, epochs)
+        return self.styledImage

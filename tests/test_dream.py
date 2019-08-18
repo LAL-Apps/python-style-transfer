@@ -12,7 +12,14 @@ def test_train_with_images_from_file():
     dream.setStyleFromPath(os.path.join(cwd,'tests','style.jpeg'))
     assert dream.contentImage is not None
     assert dream.styleImage is not None
-    #TODO test training
+
+    #Set the parameters
+    dream.setParams(9,9,8,5,2,1,1e6)
+    assert dream.styleWeights is not None
+
+    #Run the training loop. Only 1 epoch for the test
+    img = dream.apply(1)
+
 
 def test_train_with_images_from_url():
     dream = deepdream.Dream()

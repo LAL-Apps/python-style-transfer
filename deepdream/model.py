@@ -104,25 +104,18 @@ class Model():
         vgg.to(self.device)
         self.model = vgg
 
-    def train(weightL1, weightL2, weightL3, weightL4, weightL5,
-            contentWeight, styleWeight, epochs, contTrain = False):
+    def train(styleWeights, contentWeight, styleWeight, epochs, contTrain = False):
         '''
         Run the content image through
 
         Args:
-            weightL1: Weight with which to consider 1st style layer
-            weightL2: Weight with which to consider 2nd style layer
-            weightL3: Weight with which to consider 3rd style layer
-            weightL4: Weight with which to consider 4th style layer
-            weightL5: Weight with which to consider 5th style layer
+            styleWeights: Dictionary with weights per layer in format: styleWeights = {'conv1_1': <value>,
+                'conv2_1': <value>,'conv3_1': <value>,'conv4_1': <value>,'conv5_1': <value>}
             contentWeight: Weight for considering the content
             styleWeight: Weight for considering the style image
             epochs: Number of epochs to train
             contTrain: Set to true to continue training with previous image, otherwise takes new copy
         '''
-        #Move layer weights to dictionary for easy iteration
-        styleWeights = {'conv1_1': weightL1, 'conv2_1': weightL2,'conv3_1': weightL3,
-                 'conv4_1': weightL4,'conv5_1': weightL5}
         #Create a target image from the content image
         if contTrain = False:#If contTrain is set just coninue training with the previous one
             #Target image will then be changed during training
