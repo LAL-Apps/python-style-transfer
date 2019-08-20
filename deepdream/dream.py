@@ -83,7 +83,7 @@ class Dream():
             contentWeight: Weight for considering the content
             styleWeight: Weight for considering the style image
         '''
-        self.styleWeights = {'conv1_1': weightL1, 'conv2_1': weightL2,'conv3_1': weightL3,
+        self.styleLayerWeights = {'conv1_1': weightL1, 'conv2_1': weightL2,'conv3_1': weightL3,
                  'conv4_1': weightL4,'conv5_1': weightL5}
         self.contentWeight = contentWeight
         self.styleWeight = styleWeight
@@ -96,7 +96,7 @@ class Dream():
         '''
         model = Model()
         model.setImages(self.contentImage, self.styleImage)
-        self.styledImage = model.train(self.styleWeights,self.contentWeight,self.styleWeights, epochs)
+        self.styledImage = model.train(self.styleLayerWeights,self.contentWeight,self.styleWeight, epochs)
         return self.styledImage
 
     def writeFinalImage(self,path):

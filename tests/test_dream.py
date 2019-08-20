@@ -15,7 +15,7 @@ def test_train_with_images_from_file():
 
     #Set the parameters
     dream.setParams(9,9,8,5,2,1,1e6)
-    assert dream.styleWeights is not None
+    assert dream.styleLayerWeights is not None
 
     #Run the training loop. Only 1 epoch for the test
     img = dream.apply(1)

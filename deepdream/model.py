@@ -66,7 +66,7 @@ def gramMatrix(tensor):
     #Get all dimensions from the tensor
     batchSize, depth, height, width = tensor.size()
     #Reshape the tensor so the features for each channel are multiplied
-    tensor = tensor.view(d,h*w)
+    tensor = tensor.view(depth,height*width)
     #Calculate the Gram Matrix
     gram = torch.mm(tensor,tensor.t())
     return gram
@@ -104,12 +104,12 @@ class Model():
         vgg.to(self.device)
         self.model = vgg
 
-    def train(styleWeights, contentWeight, styleWeight, epochs, contTrain = False):
+    def train(self, styleLayerWeights, contentWeight, styleWeight, epochs, contTrain = False):
         '''
         Run the content image through
 
         Args:
-            styleWeights: Dictionary with weights per layer in format: styleWeights = {'conv1_1': <value>,
+            styleLayerWeights: Dictionary with weights per layer in format: styleWeights = {'conv1_1': <value>,
                 'conv2_1': <value>,'conv3_1': <value>,'conv4_1': <value>,'conv5_1': <value>}
             contentWeight: Weight for considering the content
             styleWeight: Weight for considering the style image
@@ -121,7 +121,7 @@ class Model():
             #Target image will then be changed during training
             self.target = self.content.clone().requires_grad_(True).to(self.device)
 
-        optimizer = optim.Adam([target], lr=0.003)
+        optimizer = optim.Adam([self.target], lr=0.003)
 
         for i in range(1,epochs+1):
             #Get the current features of the target image and run a forward pass
@@ -132,9 +132,9 @@ class Model():
 
             #Calculate the loss for each style layer
             styleLoss = 0 #Starting with a loss of 0 before going through all style layers
-            for layer in styleWeights:
+            for layer in styleLayerWeights:
                 #Get the current target represenation of this layer
-                tagetFeature = targetFeatures[layer]
+                targetFeature = targetFeatures[layer]
                 #Calculate Gram Matrix of target layer
                 targetGram = gramMatrix(targetFeature)
 
@@ -144,7 +144,7 @@ class Model():
                 #Calculate the loss for this layer
                 layerStyleLoss = torch.mean((targetGram - styleGram)**2)
                 #Apply the weighting for the loss
-                layerStyleLoss = layerStyleLoss * styleWeights[layer] #TODO directly in loop?
+                layerStyleLoss = layerStyleLoss * styleLayerWeights[layer] #TODO directly in loop?
 
                 #Get the dimensions
                 _, depth, height, width = targetFeature.shape
@@ -152,6 +152,10 @@ class Model():
                 styleLoss += layerStyleLoss / (depth * height * width)
 
             #Calculate the total loss weighted by content and style loss factor
+            print(contentLoss)
+            print(contentWeight)
+            print(styleLoss)
+            print(styleWeight)
             loss = contentLoss * contentWeight + styleLoss * styleWeight
 
             #Run a backward pass based on the calculated loss
