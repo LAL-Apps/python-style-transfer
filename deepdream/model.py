@@ -10,10 +10,14 @@ from PIL import Image
 def prepImage(image, maxSize=400, shape=None):
     '''
     Helper function to prepare an image by scaling and transforming
-    :param image: PIL image object to scale
-    :param maxSize: Max size of the picture. Reduce for faster training
-    :param shape: Shape (height/widht) of the image
-    :return: Normalized image as tensor
+
+    Args:
+        image: PIL image object to scale
+        maxSize: Max size of the picture. Reduce for faster training
+        shape: Shape (height/widht) of the image
+
+    Returns:
+        Normalized image as tensor
     '''
     #Determine if image should be resized
     size = maxSize if max(image.size) > maxSize else max(image.size)
@@ -36,9 +40,13 @@ def prepImage(image, maxSize=400, shape=None):
 def getFeatures(image, model):
     '''
     Execute one forward pass through a model and get the features per layer
-    :param image: Image to get the features from
-    :param model: PyTorch VGG19 model
-    :return: Fetaures for selected layers after one forward pass
+
+    Args:
+        image: Image to get the features from
+        model: PyTorch VGG19 model
+
+    Returns:
+        Fetaures for selected layers after one forward pass
     '''
     #Get a list of layers holding the content from VGG 19
     layers = {'0': 'conv1_1',
@@ -60,8 +68,12 @@ def getFeatures(image, model):
 def gramMatrix(tensor):
     '''
     Calculate a Gram Matrix (https://en.wikipedia.org/wiki/Gramian_matrix) from a given tensor
-    :param tensor: Image in tensor form
-    :return:
+
+    Args:
+        tensor: Image in tensor form
+
+    Returns:
+        Gram Matrix for a tensor
     '''
     #Get all dimensions from the tensor
     batchSize, depth, height, width = tensor.size()
@@ -74,6 +86,12 @@ def gramMatrix(tensor):
 def convertToImage(tensor):
     '''
     Helper function to take a stylized image in tensor form and return a PIL image
+
+    Args:
+        tensor: PyTorch tensor based on an image
+
+    Retruns:
+        PIL Image
     '''
     image = tensor.to("cpu").clone().detach()
     image = image.numpy().squeeze()
@@ -172,8 +190,10 @@ class Model():
     def setImages(self, contentImage, styleImage):
         '''
         Run training loops to apply to style to content image
-        :param contentImage: Image to take the content layers from
-        :param styleImage: Image to take the style layers from
+
+        Args:
+            contentImage: Image to take the content layers from
+            styleImage: Image to take the style layers from
         '''
         self.content = prepImage(contentImage).to(self.device)
         #Resize the style image to match the shape of the content image

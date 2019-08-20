@@ -12,8 +12,15 @@ from deepdream.model import Model
 def loadImageFromUrl(url):
     '''
     Load an image from a URL into a PIL image
-    :param url: URL to the picture
-    :return: PIL image
+
+    Args:
+        url: URL to the picture
+
+    Returns:
+        PIL image
+
+    Raises:
+        ImageLoadException: If the image cannot be loaded or is empty
     '''
     try:
         r = requests.get(url, headers={'User-Agent': 'Mozilla/5.0 (iPad; CPU OS 7_0_6 like Mac OS X) AppleWebKit/537.51.1 (KHTML, like Gecko) Mobile/11B651'})
@@ -40,7 +47,8 @@ class Dream():
         '''
         Set the content image from a path if the content image is stored on the local drive.
 
-        :param path: Path to the image file
+        Args:
+            path: Path to the image file
         '''
         #Load image and convert to RGB. Standard is RBG
         self.contentImage = Image.open(path).convert('RGB')
@@ -49,7 +57,8 @@ class Dream():
         '''
         Set the content image from a URL if the image should be downloaded.
 
-        :param url: URL to the image
+        Args:
+            url: URL to the image
         '''
         self.contentImage = loadImageFromUrl(url)
 
@@ -57,7 +66,8 @@ class Dream():
         '''
         Set the style image from a path if the style image is stored on the local drive.
 
-        :param path: Path to the image file
+        Args:
+            path: Path to the image file
         '''
         #Load image and convert to RGB. Standard is RBG
         self.styleImage = Image.open(path).convert('RGB')
@@ -66,7 +76,8 @@ class Dream():
         '''
         Set the style image from a URL if the image should be downloaded.
 
-        :param url: URL to the image
+        Args:
+            url: URL to the image
         '''
         self.styleImage = loadImageFromUrl(url)
 
@@ -92,7 +103,11 @@ class Dream():
         '''
         Train the model. Content image, style image and parameters must have been set before.
 
-        :param epochs: Number of iterations to train the model
+        Args:
+            epochs: Number of iterations to train the model
+
+        Returns:
+            PIL Image of the stylized image
         '''
         model = Model()
         model.setImages(self.contentImage, self.styleImage)
