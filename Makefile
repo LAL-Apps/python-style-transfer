@@ -4,4 +4,5 @@ init:
 test:
 	#Install the current package before running the test so pytest can use it like users
 	pip3 install -e .
-	pytest
+	#Run pytest with live logging and debug level
+	pytest -o log_cli=true --log-cli-level=DEBUG

@@ -4,8 +4,11 @@ Deep learning model to apply a deep dream
 import numpy as np
 import torch
 import torch.optim as optim
+import logging
 from torchvision import models, transforms
 from PIL import Image
+
+logger = logging.getLogger(__name__)
 
 def prepImage(image, maxSize=400, shape=None):
     '''
@@ -106,13 +109,14 @@ class Model():
 
     def __init__(self):
         '''Constructor to prepare the model'''
+        logger.debug('Creating model')
         #Set the device
         if torch.cuda.is_available():
             self.device = torch.device("cuda")
-            print('Running on GPU')
+            logger.info('Running on GPU')
         else:
             self.device = torch.device("cpu")
-            print('Running on CPU. Training might be slow.')
+            logger.warning('Running on CPU. Training might be slow and take easily 60+ minutes with 600 epochs')
         #Get the features from VGG19
         vgg = models.vgg19(pretrained=True).features
         #Freeze all parameters. Optimization is only done on the target image
@@ -121,8 +125,9 @@ class Model():
         #Move to GPU if available
         vgg.to(self.device)
         self.model = vgg
+        logger.debug('Completed model creation')
 
-    def train(self, styleLayerWeights, contentWeight, styleWeight, epochs, contTrain = False):
+    def train(self, styleLayerWeights, contentWeight, styleWeight, epochs, contTrain = False, logEvery = 200):
         '''
         Run the content image through
 
@@ -133,7 +138,9 @@ class Model():
             styleWeight: Weight for considering the style image
             epochs: Number of epochs to train
             contTrain: Set to true to continue training with previous image, otherwise takes new copy
+            logEvery: Number of epochs after which a log message should be displayed
         '''
+        logger.debug('Starting training')
         #Create a target image from the content image
         if contTrain == False:#If contTrain is set just coninue training with the previous one
             #Target image will then be changed during training
@@ -170,16 +177,16 @@ class Model():
                 styleLoss += layerStyleLoss / (depth * height * width)
 
             #Calculate the total loss weighted by content and style loss factor
-            print(contentLoss)
-            print(contentWeight)
-            print(styleLoss)
-            print(styleWeight)
             loss = contentLoss * contentWeight + styleLoss * styleWeight
 
             #Run a backward pass based on the calculated loss
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
+
+            if logEvery > 0 and (i % logEvery) == 0:
+                logger.debug('Epoch {}/{}'.format(i,epochs))
+        logger.debug('Completed training')
         #Conver the image from tensor to PIL
         return convertToImage(self.target)
 
@@ -195,6 +202,7 @@ class Model():
             contentImage: Image to take the content layers from
             styleImage: Image to take the style layers from
         '''
+        logger.debug('Preparing images')
         self.content = prepImage(contentImage).to(self.device)
         #Resize the style image to match the shape of the content image
         style = prepImage(styleImage,shape=self.content.shape[-2:]).to(self.device)
@@ -207,3 +215,4 @@ class Model():
         self.styleGrams = {}
         for layer in styleFeatures:
             self.styleGrams[layer] = gramMatrix(styleFeatures[layer])
+        logger.debug('Models ready')
