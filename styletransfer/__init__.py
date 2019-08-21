@@ -1,7 +1,7 @@
-from .dream import Dream
+from styletransfer.wrapper import StyleTransfer
 
 #Import constants
-from deepdream.__about__ import (
+from styletransfer.__about__ import (
     __author__,
     __copyright__,
     __email__,

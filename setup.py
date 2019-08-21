@@ -7,9 +7,9 @@ HERE = pathlib.Path(__file__).parent
 # The text of the README file
 README = (HERE / "README.md").read_text()
 
-setup(name='deepdream',
+setup(name='styletransfer',
       version='0.1.0',
-      description='Stylize images using the deep dream approach',
+      description='Transfer the style of one image to another using PyTorch',
       long_description=README,
       long_description_content_type="text/markdown",
       author='Lorenz Lehmann',

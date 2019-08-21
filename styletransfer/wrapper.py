@@ -1,13 +1,13 @@
 '''
-Module to apply a deep dream to style and content image
+Module to transfer the style from one image to another. Executes the code from the model
 '''
 import logging
 import requests
 import io
 from PIL import Image
 
-from deepdream.exceptions import ImageLoadException
-from deepdream.model import Model
+from styletransfer.exceptions import ImageLoadException
+from styletransfer.model import Model
 
 logger = logging.getLogger(__name__)
 
@@ -49,7 +49,7 @@ def loadImageFromUrl(url):
     return Image.open(bytesPicture)
 
 
-class Dream():
+class StyleTransfer():
     '''
     Class that encapsulates all components needed to run deep drems on a picture
     '''

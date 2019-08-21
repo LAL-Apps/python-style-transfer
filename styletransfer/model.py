@@ -1,5 +1,5 @@
 '''
-Deep learning model to apply a deep dream
+Deep learning model to transfer the style from one image to another
 '''
 import numpy as np
 import torch
@@ -105,7 +105,7 @@ def convertToImage(tensor):
     return image
 
 class Model():
-    '''Wrapper for VGG19 for deep dreams'''
+    '''Wrapper for VGG19 for style transfer'''
 
     def __init__(self):
         '''Constructor to prepare the model'''
