@@ -27,6 +27,14 @@ def test_train_with_images_from_file():
     #Delete the file again
     os.remove('styletransfer-test.jpg')
 
+def test_train_with_default_params():
+    '''Run the training without setting parameters'''
+    styletransfer = StyleTransfer()
+    cwd = os.getcwd()#This assumes test is run from parent directory with make test
+    styletransfer.setContentFromPath(os.path.join(cwd,'tests','content.jpeg'))
+    styletransfer.setStyleFromPath(os.path.join(cwd,'tests','style.jpeg'))
+    img = styletransfer.apply(1)
+    assert img is not None
 
 def test_load_images_from_url():
     styletransfer = StyleTransfer()

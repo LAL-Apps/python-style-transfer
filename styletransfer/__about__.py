@@ -11,4 +11,4 @@ __copyright__ = '2019 {}'.format(__author__)
 __license__ = 'MIT License'
 
 __uri__ = 'https://github.com/LAL-Apps/python-style-transfer'
-__version__ = '0.8.0'
+__version__ = '0.8.1'

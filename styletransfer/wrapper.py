@@ -54,6 +54,14 @@ class StyleTransfer():
     Class that encapsulates all components needed to run deep drems on a picture
     '''
 
+    def __init__(self):
+        '''Initialize all class variables'''
+        self.contentImage = None
+        self.styleImage = None
+        self.styleLayerWeights = None
+        self.contentWeight = None
+        self.styleWeight = None
+
     def setContentFromPath(self, path):
         '''
         Set the content image from a path if the content image is stored on the local drive.
@@ -131,24 +139,21 @@ class StyleTransfer():
             logger.error('No syle image set. Please set one via setStyleFromPath/setStyleFromUrl first')
             raise MissingConfigException('No style image set')
 
-        styleLayerWeights = self.styleLayerWeights
-        if styleLayerWeights is None:
-            styleLayerWeights = DEFAULT_STYLE_LAYER_WEIGHTS
-            logger.info('styleLayerWeights not set. Using default values: {}'.format(styleLayerWeights))
+        if self.styleLayerWeights is None:
+            self.styleLayerWeights = DEFAULT_STYLE_LAYER_WEIGHTS
+            logger.info('styleLayerWeights not set. Using default values: {}'.format(self.styleLayerWeights))
 
-        contentWeight = self.contentWeight
-        if contentWeight is None:
-            contentWeight = DEFAULT_CONTENT_WEIGHT
-            logger.info('contentWeight not set. Using default value: {}'.format(contentWeight))
+        if self.contentWeight is None:
+            self.contentWeight = DEFAULT_CONTENT_WEIGHT
+            logger.info('contentWeight not set. Using default value: {}'.format(self.contentWeight))
 
-        styleWeight = self.styleWeight
-        if styleWeight is None:
-            styleWeight = DEFAULT_STYLE_WEIGHT
-            logger.info('styleWeight not set. Using default value: {}'.format(styleWeight))
+        if self.styleWeight is None:
+            self.styleWeight = DEFAULT_STYLE_WEIGHT
+            logger.info('styleWeight not set. Using default value: {}'.format(self.styleWeight))
 
         model = Model()
         model.setImages(self.contentImage, self.styleImage)
-        self.styledImage = model.train(styleLayerWeights,contentWeight,styleWeight, epochs)
+        self.styledImage = model.train(self.styleLayerWeights,self.contentWeight,self.styleWeight,epochs)
         return self.styledImage
 
     def writeFinalImage(self,path):
