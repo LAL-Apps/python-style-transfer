@@ -1,5 +1,7 @@
 import pathlib
+import os
 from setuptools import setup, find_packages
+from setuptools.command.easy_install import easy_install
 from distutils.util import convert_path
 
 # The directory containing this file
@@ -17,6 +19,15 @@ with open(aboutPath) as aboutFile:
 #Load the requirements form the file
 with open('requirements.txt') as f:
     requirements = f.read().splitlines()
+
+#Inject the install option for PyTorch
+normal_run_setup_fn = easy_install.run_setup
+def setup_hook(self, setup_script, setup_base, args):
+    #Only trigger for torch or torchvision and if running on Windows
+    if setup_script.find('/torch') > -1 and setup_script.endswith('setup.py') and os.name == 'nt':
+        args.insert(0,'--install-option="-f https://download.pytorch.org/whl/torch_stable.html"')
+    normal_run_setup_fn(self, setup_script, setup_base, args)
+easy_install.run_setup = setup_hook
 
 setup(
     name=meta['__title__'],
