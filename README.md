@@ -1,6 +1,13 @@
 # styletransfer
 A Python library to transfer the style of one picture to another using PyTorch.
 
+For example:
+
+|Content | + Style | = stylized |
+|--------|---------|------------|
+|![content image][contentImage]|![style image][styleImage]|![stylized image][stylizedDefault]|
+
+
 ## Installation
 You can install styletransfer from PyPi using:
 
@@ -31,3 +38,9 @@ styleTransfer.writeFinalImage('stylized_image.jpg')
 
 ## Advanced usage
 *TBD: Detailed instructions to follow*
+
+
+
+[contentImage]: https://github.com/LAL-Apps/python-style-transfer/raw/master/docs/content.jpeg "Content image"
+[styleImage]: https://github.com/LAL-Apps/python-style-transfer/raw/master/docs/style.jpeg "Style image"
+[stylizedDefault]: https://github.com/LAL-Apps/python-style-transfer/raw/master/docs/stylized.jpg "Stylized content image"
