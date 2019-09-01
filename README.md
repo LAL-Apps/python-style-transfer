@@ -5,7 +5,7 @@ For example:
 
 |Content | Style | Output |
 |--------|---------|------------|
-|[Felis silvestris catus lying on rice straw by Basile Morin][1]|[Red Gum Table by Mark Anthony Boyle][2]|Generated Image|
+|[Cat with Bell by Tamba Budiarsana][1]|[Wood Bark Nature Texture by Free Stock Textures][2]|Generated Image|
 |![content image][contentImage]|![style image][styleImage]|![stylized image][stylizedImage]|
 
 
@@ -24,10 +24,10 @@ from styletransfer import StyleTransfer
 styleTransfer = StyleTransfer()
 
 #Set the content image from URL
-styleTransfer.setContentFromUrl('https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Felis_silvestris_catus_lying_on_rice_straw.jpg/640px-Felis_silvestris_catus_lying_on_rice_straw.jpg')
+styleTransfer.setContentFromUrl('https://github.com/LAL-Apps/python-style-transfer/raw/master/docs/content.jpg')
 
 #Set the style image from URL
-styleTransfer.setStyleFromUrl('https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/RedGumTable.jpg/320px-RedGumTable.jpg')
+styleTransfer.setStyleFromUrl('https://github.com/LAL-Apps/python-style-transfer/raw/master/docs/style.jpg')
 
 #Use default settings and train the model
 #If you do not have a GPU that can take 30-60 minutes
@@ -38,15 +38,42 @@ styleTransfer.writeFinalImage('stylized.jpg')
 ```
 
 ## Advanced usage
-*TBD: Detailed instructions to follow*
+
+### Overview
+The following methods are available on a style transfer object:
+
+```python
+from styletransfer import StyleTransfer
+styleTransfer = StyleTransfer()
+
+#Content and style image can be set from local files
+styletransfer.setContentFromPath('content.jpg')
+styletransfer.setStyleFromPath('style.jpg')
+
+#Or they can be set from URLs. Both are equivalent, just use what is more convenient for you
+styleTransfer.setContentFromUrl('https://github.com/LAL-Apps/python-style-transfer/raw/master/docs/content.jpg')
+styleTransfer.setStyleFromUrl('https://github.com/LAL-Apps/python-style-transfer/raw/master/docs/style.jpg')
+
+#You can set the parameters to be used in training like this:
+styletransfer.setParams(weightLayer1, weightLayer2, weightLayer3, weightLayer4, weightLayer5, contentWeight, styleWeight)
+
+#If you do not set the parameters the default values will be used which is equivalent to calling:
+styletransfer.setParams(1.0, 0.75, 0.2, 0.2, 0.5, 1, 1e6)
+
+#Once style, content and parameters are defined you can train the model by calling:
+styleTransfer.apply(epochs)
+
+#The epochs show for how long the model should train. If you do not provide epochs the default value is used which is equivalent to calling:
+styleTransfer.apply(600)
+
+#Once training has been completed you can save the model using:
+styleTransfer.writeFinalImage('stylized.jpg')
+#Since Pillow is used for saving the image the following formats are supported: https://pillow.readthedocs.io/en/stable/handbook/image-file-formats.html
+```
 
 
-
-
-
-
-[contentImage]: https://github.com/LAL-Apps/python-style-transfer/raw/master/docs/content.jpeg "Content image"
+[contentImage]: https://github.com/LAL-Apps/python-style-transfer/raw/master/docs/content.jpg "Content image"
 [styleImage]: https://github.com/LAL-Apps/python-style-transfer/raw/master/docs/style.jpg "Style image"
 [stylizedImage]: https://github.com/LAL-Apps/python-style-transfer/raw/master/docs/stylized.jpg "Stylized content image"
-[1]: https://commons.wikimedia.org/wiki/File:Felis_silvestris_catus_lying_on_rice_straw.jpg
-[2]: https://commons.wikimedia.org/wiki/File:RedGumTable.jpg
+[1]: https://www.pexels.com/photo/cat-with-bell-979250/
+[2]: https://freestocktextures.com/texture/wood-bark-nature,231.html
